@@ -13,6 +13,15 @@ from . import __version__
 from .audit import AuditOptions, audit_tree
 
 
+class _OutputParser(argparse.ArgumentParser):
+    def _print_message(self, message: str, file: TextIO | None = None) -> None:
+        # argparse normally suppresses OSError here, which can turn a failed
+        # unbuffered help/version write into a successful exit.
+        if message:
+            stream = sys.stderr if file is None else file
+            stream.write(message)
+
+
 def _positive_integer(value: str) -> int:
     try:
         number = int(value)
@@ -45,7 +54,7 @@ def _output_error() -> int:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(
+    parser = _OutputParser(
         prog="portable-path-audit",
         description="Inspect directory entry names for portability problems without reading file contents.",
     )

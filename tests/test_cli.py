@@ -64,21 +64,26 @@ class CliTests(unittest.TestCase):
         environment = os.environ.copy()
         environment["PYTHONPATH"] = str(SOURCE)
         environment["PYTHONIOENCODING"] = "utf-8"
-        for flags in ([], ["--json"], ["--help"], ["--version"]):
-            with self.subTest(flags=flags):
-                reader, writer = os.pipe()
-                os.close(reader)
-                try:
-                    process = subprocess.run(
-                        [sys.executable, "-m", "portable_path_audit", str(self.root), *flags],
-                        stdout=writer, stderr=subprocess.PIPE, text=True,
-                        encoding="utf-8", env=environment, check=False, timeout=20,
-                    )
-                finally:
-                    os.close(writer)
-                self.assertEqual(process.returncode, 2, process.stderr)
-                self.assertNotIn("Traceback", process.stderr)
-                self.assertNotIn("Exception ignored", process.stderr)
+        for unbuffered in (False, True):
+            if unbuffered:
+                environment["PYTHONUNBUFFERED"] = "1"
+            else:
+                environment.pop("PYTHONUNBUFFERED", None)
+            for flags in ([], ["--json"], ["--help"], ["--version"]):
+                with self.subTest(flags=flags, unbuffered=unbuffered):
+                    reader, writer = os.pipe()
+                    os.close(reader)
+                    try:
+                        process = subprocess.run(
+                            [sys.executable, "-m", "portable_path_audit", str(self.root), *flags],
+                            stdout=writer, stderr=subprocess.PIPE, text=True,
+                            encoding="utf-8", env=environment, check=False, timeout=20,
+                        )
+                    finally:
+                        os.close(writer)
+                    self.assertEqual(process.returncode, 2, process.stderr)
+                    self.assertNotIn("Traceback", process.stderr)
+                    self.assertNotIn("Exception ignored", process.stderr)
 
     def test_missing_root_has_json_error_and_status_two(self):
         process = self.run_cli(self.root / "missing", "--json")
