@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "portable-path-audit"
+version = "0.1.0"
+description = "Read-only filename portability checks for directory trees"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = []
+keywords = ["filenames", "portability", "filesystem", "validation"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: System :: Filesystems",
+]
+
+[project.scripts]
+portable-path-audit = "portable_path_audit.cli:main"
+
+[project.urls]
+Repository = "https://github.com/7364588/portable-path-audit"
+Issues = "https://github.com/7364588/portable-path-audit/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
