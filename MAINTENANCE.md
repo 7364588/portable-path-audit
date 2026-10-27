@@ -11,5 +11,6 @@ Before a release:
 4. Review distribution contents for local files, secrets, caches, and accidental personal data.
 5. Record user-visible changes in the changelog and choose a version matching the change.
 
-The scheduled CI job checks compatibility. It does not edit files, create commits, or publish packages.
+Maintenance is manual. CI checks compatibility on push, pull request or manual dispatch.
+It does not edit files, create commits, or publish packages.
 Release timing depends on useful changes and passing checks; no response-time guarantee is made.
